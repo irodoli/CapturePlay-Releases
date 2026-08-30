@@ -1,0 +1,21 @@
+{
+  "format": "CapturePlayDeltaChannelManifest",
+  "schemaVersion": 2,
+  "targetVersion": "0.8.9",
+  "targetBuildId": "v0.8.9-20260830-delta-bridge-resize-recording-retry-rollback-native-full-stability",
+  "publishedAt": "2026-08-30T09:30:52.592Z",
+  "releaseNotesUrl": "https://raw.githubusercontent.com/irodoli/CapturePlay-Releases/main/RELEASE_NOTES.txt",
+  "recoveryUrl": "https://dl.irodoli.com/",
+  "importance": "recommended",
+  "summary": "CapturePlay v0.8.9 delta bridge",
+  "changes": [
+    "署名付き差分更新ブリッジ",
+    "分離ウィンドウのリサイズ安定化",
+    "録画停止と更新ダイアログの安定化",
+    "native変更時のFull Setup安全誘導"
+  ],
+  "deltas": [],
+  "signatureAlgorithm": "ed25519",
+  "keyId": "e80f63e172adefa8",
+  "signature": "Ve4RLnGtNx9R5imt7PVkuf5RusaAKTVm+L44cP9izbH3LNHzq4ew5abqg6tHsnn9FdeKq0qag50Bxmtz6fYRCw=="
+}
