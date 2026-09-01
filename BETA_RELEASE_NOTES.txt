@@ -1,6 +1,17 @@
-# CapturePlay Beta channel
+CapturePlay 0.9.0-beta.1
 
-Current Beta baseline: v0.8.11
+最初のv0.9系Betaです。正式Stableはv0.8.11のままです。
 
-The Beta channel is ready. No prerelease newer than Stable v0.8.11 is currently published.
-The first normal post-bootstrap user-review candidate is planned for the v0.9.0 feature line.
+今回の主な変更
+- 「マルチビュー」を追加し、外部入力/カメラ、ウィンドウ、画面を別々のWindowsウィンドウで追加表示できます。
+- Primaryの低遅延表示・録画・撮影・音声・診断は既存Fast Pathのまま維持し、追加表示は必要なときだけ起動します。
+- Auxiliary Sessionは表示専用から開始し、追加ウィンドウの音声は初期状態で再生しません。
+- 同じAuxiliary sourceの二重起動を防止します。
+
+このBetaにはまだ含めないもの
+- タイムシフト / Replay Buffer / インスタントリプレイ
+- preset / 自由配置のcomposition layout
+- text / image / frame / mask overlay
+- 内蔵素材pack / Lyra / エリナoverlay
+
+これらはPrimary-only時の負荷を増やさないlazy設計を維持したまま、後続Betaで追加します。
