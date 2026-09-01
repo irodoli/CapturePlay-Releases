@@ -1,0 +1,18 @@
+{
+  "format": "CapturePlayDeltaChannelManifest",
+  "schemaVersion": 2,
+  "targetVersion": "0.8.11",
+  "targetBuildId": "v0.8.11-20260901-beta-bootstrap-staging-retry-fix",
+  "publishedAt": "2026-09-01T04:22:12.000Z",
+  "releaseNotesUrl": "https://raw.githubusercontent.com/irodoli/CapturePlay-Releases/main/BETA_RELEASE_NOTES.txt",
+  "recoveryUrl": "https://dl.irodoli.com/",
+  "importance": "optional",
+  "summary": "CapturePlay Beta channel baseline v0.8.11",
+  "changes": [
+    "Beta channel is ready; no newer Beta is currently published"
+  ],
+  "deltas": [],
+  "signatureAlgorithm": "ed25519",
+  "keyId": "e80f63e172adefa8",
+  "signature": "t/sfBpOvrTc12BJQAc2D1O53IFxRqJZMl0w0DM/WAE2PYLeHUtgD1nt5X/Fdu8IOtAB+8lXVyZeqQo6TdJl/CQ=="
+}
