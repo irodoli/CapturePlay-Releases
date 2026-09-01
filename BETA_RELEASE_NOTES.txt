@@ -1,6 +1,0 @@
-# CapturePlay Beta channel
-
-Current Beta baseline: v0.8.10
-
-The Beta channel is ready. No prerelease newer than the current Stable v0.8.10 is published yet.
-The first normal post-bootstrap user-review candidate is planned for the v0.9.0 feature line.
