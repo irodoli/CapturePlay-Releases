@@ -1,25 +1,17 @@
-# CapturePlay v0.8.11 Release Notes
+# CapturePlay v0.8.9 Release Notes
 
-Build ID: v0.8.11-20260901-beta-bootstrap-staging-retry-fix
+Build ID: v0.8.9-20260830-delta-bridge-resize-recording-retry-rollback-native-full-stability
 
 ## Improvements
-- Adds an in-app **Beta update** opt-in under Settings / Update. Stable remains the default channel, and Beta can be enabled or disabled without a password or public Beta download page.
-- Separates signed Stable (`delta-latest.json`) and Beta (`beta-latest.json`) feeds while retaining the existing Ed25519 schema-2 trust contract used by formal v0.8.9 clients.
-- Keeps signature, SHA-256, exact size, trusted URL, exact Version / Build ID base, final-file manifest, staged health-check and rollback verification on both channels.
-- Beta OFF follows the latest Stable and uses the protected Stable Full Setup when a verified forward delta chain cannot safely return the installed Beta.
-- Keeps ASAR enabled while unpacking `src/**/*`, and uses 64 KiB blocks for remaining large changed files so normal JS/CSS/HTML/resource updates stay small.
-- Keeps native EXE / DLL changes fail-closed for delta publication; installer provenance changes continue to use Full Setup and later Versions return to delta.
-
-## Windows staging resilience
-- Adds bounded Windows retry handling when the updater clones/removes the sibling staging tree and encounters transient `EPERM`, `EBUSY`, `EACCES` or `ENOTEMPTY` locks.
-- Cleanup failure can no longer overwrite the original preparation error. If a preparation step still fails, the user sees the real phase (`staging`, package download, delta apply, final verify, health-check or swap preparation) instead of a misleading cleanup-only EPERM.
-- Health-check scratch cleanup is also best-effort with bounded retries so a temporary cleanup lock cannot turn an otherwise successful health-check into a false updater failure.
-
-## Beta-first workflow
-- v0.8.11 is the Stable bootstrap for Beta-first review. After this bootstrap is installed, ordinary user-review candidates are delivered as signed in-app Beta updates: automated validation -> `BETA_READY` -> Beta feed -> user review -> Stable promotion.
-- Active Beta publication keeps only the newest Beta plus the minimum signed delta chain needed to reach it. Stable and rollback evidence remain retained.
+- Adds the signed delta-update bridge used by future CapturePlay updates. Update manifests are Ed25519 verified, require exact Version / Build ID / file SHA-256 bases, and are applied to a verified staging copy before safe replacement.
+- If the installed base or delta chain cannot be verified, CapturePlay keeps the current working version and offers the protected ConoHa Full Setup recovery route instead of downloading a GitHub Full fallback.
+- Temporary network timeouts, HTTP 429 and server 5xx failures remain retryable and do not incorrectly force the Full Setup recovery path.
+- A failed or rolled-back delta apply is reported once on the next launch; rollback restoration is treated as a required operation rather than a best-effort silent move.
+- Windows Smart App Control can reject newly copied unsigned native executables. CapturePlay therefore does not publish a normal delta when `resources/native` EXE/DLL bytes change; those releases use the protected Full Setup path. v0.8.9 itself contains a native resize fix, so v0.8.8 reaches this bridge through the final legacy Full update.
+- Makes the separated low-latency preview resilient to interactive window resizing by deferring transient swap-chain rebuild failures and retrying after sizing completes.
+- Keeps the recording Stop control available while recording remains active even if preview activity changes transiently.
+- Prevents a dismissed update error from passively reopening as a full-window blocking overlay during recording-state broadcasts.
 
 ## Compatibility
-- Capture, recording, screenshots, audio, diagnostics and accepted GC575/GC510 low-latency behavior are unchanged by this updater/bootstrap release.
-- The multiple-monitor / different-video-source workflow was evaluated before this bootstrap and is assigned to the v0.9.0 feature line for the first normal post-bootstrap Beta candidate.
-- v0.8.10 was withdrawn before formal promotion after its first public updater E2E exposed a transient staging-cleanup error-masking problem; its bytes are not reused or replaced under the same Version.
+- v0.8.9 is the delta bridge. Existing v0.8.8 clients use the final legacy GitHub updater path to reach this bridge. Releases after v0.8.9 use signed sequential delta packages and do not add new GitHub Full Setup assets.
+- Capture, audio, recording quality, capture diagnostics and accepted GC575 low-latency behavior are otherwise unchanged.
