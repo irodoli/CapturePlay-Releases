@@ -1,28 +1,28 @@
 {
   "format": "CapturePlayDeltaChannelManifest",
   "schemaVersion": 2,
-  "targetVersion": "0.9.0-beta.1",
-  "targetBuildId": "v0.9.0-beta.1-20260901-auxiliary-multiview-foundation",
-  "publishedAt": "2026-09-01T08:09:16.276Z",
+  "targetVersion": "0.9.0-beta.2",
+  "targetBuildId": "v0.9.0-beta.2-20260901-delta-base-preflight-recovery",
+  "publishedAt": "2026-09-01T13:30:10.000Z",
   "releaseNotesUrl": "https://raw.githubusercontent.com/irodoli/CapturePlay-Releases/main/BETA_RELEASE_NOTES.txt",
   "recoveryUrl": "https://dl.irodoli.com/",
   "importance": "optional",
-  "summary": "CapturePlay 0.9.0-beta.1 マルチビュー基盤",
+  "summary": "CapturePlay 0.9.0-beta.2 更新復旧修正 + マルチビュー基盤",
   "changes": [
-    "マルチビューで外部入力/カメラ・ウィンドウ・画面を別ウィンドウ表示",
-    "Primary Fast Pathは維持し追加表示は必要時のみ起動",
-    "Auxiliary Sessionは表示専用・音声初期OFF"
+    "差分元をダウンロード前に完全検証し不一致はFull Setup復旧へ案内",
+    "stagingコピーを再検証しstagingだけの不整合は1回再作成",
+    "beta.1のマルチビューとPrimary Fast Pathをそのまま継続"
   ],
   "deltas": [
     {
       "fromVersion": "0.8.11",
       "fromBuildId": "v0.8.11-20260901-beta-bootstrap-staging-retry-fix",
-      "toVersion": "0.9.0-beta.1",
-      "toBuildId": "v0.9.0-beta.1-20260901-auxiliary-multiview-foundation",
+      "toVersion": "0.9.0-beta.2",
+      "toBuildId": "v0.9.0-beta.2-20260901-delta-base-preflight-recovery",
       "package": {
-        "url": "https://raw.githubusercontent.com/irodoli/CapturePlay-Releases/main/delta/CapturePlay-v0.8.11-to-v0.9.0-beta.1.gz",
-        "sha256": "30aa05c38cf1203a050b0ba671a6c4839cc35badd69a5bbb05f9fc429f7bf109",
-        "size": 1074341
+        "url": "https://raw.githubusercontent.com/irodoli/CapturePlay-Releases/main/delta/CapturePlay-v0.8.11-to-v0.9.0-beta.2.gz",
+        "sha256": "bf9e0413e93e6782408ab87d4c9973cc4f1ef5b7b962e598d49e04f0d8be4c61",
+        "size": 1085839
       },
       "baseFiles": [
         {
@@ -511,7 +511,7 @@
           "path": "CapturePlay.exe",
           "baseSha256": "4171097b76d87b013ee0ccd996abce5771cfc2cdf1afed58f38ae275fb7eb8ad",
           "baseSize": 235622400,
-          "targetSha256": "cefae0220f3fccb8567937b41e50000f600b7e58c0b474879d483836f2924203",
+          "targetSha256": "738f3226d78c2389c6783541bf2ee74a5d559e24400a3fdad6947d1b336277c9",
           "targetSize": 235622400,
           "mode": "blocks"
         },
@@ -519,16 +519,24 @@
           "path": "resources/app.asar",
           "baseSha256": "fd34673789c49b8c429e063eb6310fefae1afbe5ba8283f8717385bda72acb23",
           "baseSize": 2211743,
-          "targetSha256": "934fd87d51af76364de7affdbacfd8c340696585e5ff5e7f30d36adb8614dc5c",
-          "targetSize": 2213930,
+          "targetSha256": "c2a61e36953c86959229c42bd1b325f8693cd5f96f78954821f8dcb0313cf50d",
+          "targetSize": 2214561,
+          "mode": "full"
+        },
+        {
+          "path": "resources/app.asar.unpacked/src/delta-updater-client.js",
+          "baseSha256": "62ef8e27cbf59acd2fa9ea8bfcdca9b28c247af1c221d4dcd7fa10ac45e2d325",
+          "baseSize": 23235,
+          "targetSha256": "8b15ba9b8b9f27f50d13cf22b4896e2caf5782833a55962c8d89477c8cd4c656",
+          "targetSize": 27203,
           "mode": "full"
         },
         {
           "path": "resources/app.asar.unpacked/src/main.js",
           "baseSha256": "8928d95838fb241f27999dbb8f379ce1c403f93a5b2acb1886fb9db24efac90b",
           "baseSize": 77743,
-          "targetSha256": "e2d00ea0cac0abf748d2c11c66c4fb464688bfb28cde1a2e923eff0d229665be",
-          "targetSize": 79149,
+          "targetSha256": "97bef67a023a27aff6598a8ab2dd5e85d9597abc4d6e8f794c3f55491954a0c2",
+          "targetSize": 79477,
           "mode": "full"
         },
         {
@@ -576,7 +584,7 @@
         {
           "path": "CapturePlay.exe",
           "size": 235622400,
-          "sha256": "cefae0220f3fccb8567937b41e50000f600b7e58c0b474879d483836f2924203"
+          "sha256": "738f3226d78c2389c6783541bf2ee74a5d559e24400a3fdad6947d1b336277c9"
         },
         {
           "path": "chrome_100_percent.pak",
@@ -920,8 +928,8 @@
         },
         {
           "path": "resources/app.asar",
-          "size": 2213930,
-          "sha256": "934fd87d51af76364de7affdbacfd8c340696585e5ff5e7f30d36adb8614dc5c"
+          "size": 2214561,
+          "sha256": "c2a61e36953c86959229c42bd1b325f8693cd5f96f78954821f8dcb0313cf50d"
         },
         {
           "path": "resources/app.asar.unpacked/src/auxiliary-session-manager.js",
@@ -935,13 +943,13 @@
         },
         {
           "path": "resources/app.asar.unpacked/src/delta-updater-client.js",
-          "size": 23235,
-          "sha256": "62ef8e27cbf59acd2fa9ea8bfcdca9b28c247af1c221d4dcd7fa10ac45e2d325"
+          "size": 27203,
+          "sha256": "8b15ba9b8b9f27f50d13cf22b4896e2caf5782833a55962c8d89477c8cd4c656"
         },
         {
           "path": "resources/app.asar.unpacked/src/main.js",
-          "size": 79149,
-          "sha256": "e2d00ea0cac0abf748d2c11c66c4fb464688bfb28cde1a2e923eff0d229665be"
+          "size": 79477,
+          "sha256": "97bef67a023a27aff6598a8ab2dd5e85d9597abc4d6e8f794c3f55491954a0c2"
         },
         {
           "path": "resources/app.asar.unpacked/src/preload.js",
@@ -1063,5 +1071,5 @@
   ],
   "signatureAlgorithm": "ed25519",
   "keyId": "e80f63e172adefa8",
-  "signature": "CCddWHH63FVupRMNeE2BjKJXVIYF9lX95jTcgSVH++roVsWnwJv4WzicqQqu4qyZsNiGG/sy2sp97OGCGyqvBg=="
+  "signature": "tN7b9NR6GwoGLWUa5qAIOcnZ0WlrfpWwRQwSPmwG51erWhZtJ0cwG3BYs3MFWEExvH/+qkgH66sl9xgLXq49Aw=="
 }

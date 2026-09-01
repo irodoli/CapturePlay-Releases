@@ -1,17 +1,16 @@
-CapturePlay 0.9.0-beta.1
+CapturePlay 0.9.0-beta.2
 
-最初のv0.9系Betaです。正式Stableはv0.8.11のままです。
+v0.9.0-beta.1の実機更新で見つかった差分更新の復旧判定を修正したBetaです。正式Stableはv0.8.11のままです。
 
-今回の主な変更
-- 「マルチビュー」を追加し、外部入力/カメラ、ウィンドウ、画面を別々のWindowsウィンドウで追加表示できます。
-- Primaryの低遅延表示・録画・撮影・音声・診断は既存Fast Pathのまま維持し、追加表示は必要なときだけ起動します。
-- Auxiliary Sessionは表示専用から開始し、追加ウィンドウの音声は初期状態で再生しません。
-- 同じAuxiliary sourceの二重起動を防止します。
+今回の修正
+- 差分をダウンロードする前に、現在のインストールが署名済み差分の基準と完全一致するか確認します。
+- 基準が一致しない場合は、適用できない差分をダウンロードせず、保護されたFull Setup復旧へ案内します。
+- stagingコピー後も基準ファイルを再検証し、live本体が正常なのにstagingだけ不整合な場合は1回だけ作り直します。
+- ファイル整合性検証は弱めず、Version/Build IDだけ同じ異なるbytesを誤って差分適用しません。
 
-このBetaにはまだ含めないもの
-- タイムシフト / Replay Buffer / インスタントリプレイ
-- preset / 自由配置のcomposition layout
-- text / image / frame / mask overlay
-- 内蔵素材pack / Lyra / エリナoverlay
+v0.9.0-beta.1から継続する機能
+- マルチビューで外部入力/カメラ、ウィンドウ、画面を別Windowsウィンドウで追加表示
+- Primary Fast Pathは既存のまま維持し、Auxiliaryは必要時だけ起動
+- Auxiliaryは表示専用・音声初期OFF
 
-これらはPrimary-only時の負荷を増やさないlazy設計を維持したまま、後続Betaで追加します。
+Primaryの録画・撮影・音声・診断・低遅延処理とnative helperは変更していません。
