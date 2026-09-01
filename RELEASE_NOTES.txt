@@ -1,17 +1,20 @@
-# CapturePlay v0.8.9 Release Notes
+# CapturePlay v0.8.10 Release Notes
 
-Build ID: v0.8.9-20260830-delta-bridge-resize-recording-retry-rollback-native-full-stability
+Build ID: v0.8.10-20260901-beta-foundation-granular-delta-bootstrap
 
 ## Improvements
-- Adds the signed delta-update bridge used by future CapturePlay updates. Update manifests are Ed25519 verified, require exact Version / Build ID / file SHA-256 bases, and are applied to a verified staging copy before safe replacement.
-- If the installed base or delta chain cannot be verified, CapturePlay keeps the current working version and offers the protected ConoHa Full Setup recovery route instead of downloading a GitHub Full fallback.
-- Temporary network timeouts, HTTP 429 and server 5xx failures remain retryable and do not incorrectly force the Full Setup recovery path.
-- A failed or rolled-back delta apply is reported once on the next launch; rollback restoration is treated as a required operation rather than a best-effort silent move.
-- Windows Smart App Control can reject newly copied unsigned native executables. CapturePlay therefore does not publish a normal delta when `resources/native` EXE/DLL bytes change; those releases use the protected Full Setup path. v0.8.9 itself contains a native resize fix, so v0.8.8 reaches this bridge through the final legacy Full update.
-- Makes the separated low-latency preview resilient to interactive window resizing by deferring transient swap-chain rebuild failures and retrying after sizing completes.
-- Keeps the recording Stop control available while recording remains active even if preview activity changes transiently.
-- Prevents a dismissed update error from passively reopening as a full-window blocking overlay during recording-state broadcasts.
+- Adds an in-app **Beta update** opt-in under Settings / Update. Stable remains the default channel, and Beta can be enabled or disabled without a separate password or public download page.
+- Separates the signed update feed into Stable (`delta-latest.json`) and Beta (`beta-latest.json`) while keeping the existing Ed25519 schema-2 signature payload compatible with installed v0.8.9 clients.
+- Keeps SHA-256, exact size, trusted GitHub URL, exact Version / Build ID base, final file manifest, staged health-check and rollback verification on both channels.
+- When Beta is turned off, CapturePlay follows the latest Stable. If a Beta cannot safely reach Stable by a verified forward delta chain, CapturePlay offers the protected current Stable Full Setup instead of forcing a reverse or untrusted delta.
+- Makes normal application-layer updates smaller by unpacking `src/**/*` from ASAR and reducing the large-file block delta granularity from 1 MiB to 64 KiB.
+- Keeps native EXE / DLL changes fail-closed for delta publication. Changes that require Windows installer provenance continue to use the protected Full Setup path and later compatible Versions return to delta updates.
+
+## Beta-first workflow
+- v0.8.10 is the one-time Stable bootstrap for the Beta-first review workflow. After this bootstrap is installed, ordinary user-review candidates are delivered through the in-app Beta channel: automated validation -> `BETA_READY` -> signed Beta feed -> in-app update -> user review -> Stable promotion.
+- The public product page and manual download portal do not expose Beta listings or Beta download buttons.
+- Active Beta publication retains only the latest Beta and the minimum signed delta chain required to reach it. Stable and rollback evidence remain retained.
 
 ## Compatibility
-- v0.8.9 is the delta bridge. Existing v0.8.8 clients use the final legacy GitHub updater path to reach this bridge. Releases after v0.8.9 use signed sequential delta packages and do not add new GitHub Full Setup assets.
-- Capture, audio, recording quality, capture diagnostics and accepted GC575 low-latency behavior are otherwise unchanged.
+- Capture, recording, screenshots, audio, diagnostics and accepted GC575/GC510 low-latency behavior are unchanged by this updater/bootstrap release.
+- The previously requested multiple-monitor / different-video-source feature was evaluated before this bootstrap. It is a meaningful new workflow and is assigned to the v0.9.0 feature line so it can be reviewed as the first normal post-bootstrap Beta candidate.
