@@ -1,24 +1,22 @@
-CapturePlay 0.9.0-beta.4
+CapturePlay 0.9.0-beta.5
 
-0.9.0-beta.3のマルチビュー + Replay Bufferを維持したまま、Beta更新のFull Setup復旧導線を修正しました。正式Stableはv0.8.11のままです。
+マルチビューでPrimary映像そのものを扱えるように改善しました。正式Stableはv0.8.11のままです。
 
-今回の変更
-- Beta更新中に差分元のファイル整合性が一致しない場合、ポータルTOPではなく最新Beta Full Setupを直接開くようにしました。
-- 復旧先は保護された `https://dl.irodoli.com/files/CapturePlay-Beta-Setup.exe` に固定しています。
-- Stableへ戻す場合は従来どおり正式 `CapturePlay-Setup.exe` を使い、Beta用Setupと混同しません。
-- SHA-256 / size / Version / Build ID / 署名検証は緩めていません。不明なinstall bytesへ差分を強制適用しません。
-- 0.9.0-beta.3で追加した専用マルチビュー、複数入力タイル、Primary LIVE / 10秒前 / 30秒前、Replay Bufferはそのままです。
-- native helper、Primary低遅延表示、録画、撮影、音量ミキサー、診断は変更していません。
-
-更新について
-- 正式v0.8.11の正規bytesからは署名済み差分で0.9.0-beta.4へ直接更新できます。
-- 0.9.0-beta.3からも署名済み差分で0.9.0-beta.4へ更新できます。
-- すでに同一Version内でbytesがずれているv0.8.11は、安全上その差分を強制適用しません。その端末だけはBeta Full Setupで一度復旧してください。
-- beta.4導入後に同種のBeta復旧が必要になった場合は、アプリのボタンから最新Beta Full Setupへ直接移動できます。
+今回の主な変更
+- マルチビューを開くと、操作画面にあったPrimary映像を同じままPrimaryタイルへ移動します。
+- 操作画面とマルチビューでPrimaryを二重取得しません。同じ低遅延Primaryを使います。
+- マルチビュー内からPrimary入力を「外部入力 / カメラ」「ウィンドウ」「画面」へ変更できます。
+- Primaryを変更した場合も、既存のPrimary切替経路を使い、マルチビュー側で別のPrimaryを新規取得しません。
+- マルチビューを閉じると、同じPrimary映像を操作画面へ戻します。
+- 操作画面には、マルチビュー中は「Primary映像はマルチビューに表示中」と表示します。
+- Replay Bufferのための画面ミラー取得はReplay ON時だけ開始します。通常のLIVE表示には使いません。
+- Replay Buffer OFFでは、ミラー取得、圧縮、10秒/30秒の復号、タイマー、保存中バッファをすべて停止・解放します。
+- Replayの遅延音声は引き続きOFFです。
+- Primaryの録画、撮影、音量ミキサー、診断、低遅延表示のnative helperは従来のままです。
 
 確認してほしいこと
-- まず0.9.0-beta.4が起動すること
-- マルチビューが専用ウィンドウ1枚で開くこと
-- Primary LIVE / 10秒前 / 30秒前が期待どおり表示されること
-- Replay Buffer OFFで遅延処理が停止すること
-- 別入力を追加しても同じマルチビューウィンドウ内に入ること
+- マルチビューを開くとPrimaryが操作画面からPrimaryタイルへ移ること
+- マルチビュー内でPrimary入力を変更できること
+- マルチビューを閉じるとPrimaryが操作画面へ戻ること
+- Replay Buffer ONで10秒前 / 30秒前が表示されること
+- Replay Buffer OFFで遅延表示とReplay用処理が停止すること
