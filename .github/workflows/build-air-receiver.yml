@@ -1,0 +1,116 @@
+name: Build CapturePlay Air Receiver
+
+on:
+  push:
+    branches:
+      - air-receiver-component-1.74-cp1
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Configure MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            git
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-openssl
+            mingw-w64-ucrt-x86_64-libplist
+            mingw-w64-ucrt-x86_64-gstreamer
+            mingw-w64-ucrt-x86_64-gst-plugins-base
+            mingw-w64-ucrt-x86_64-gst-plugins-good
+            mingw-w64-ucrt-x86_64-gst-plugins-bad
+            mingw-w64-ucrt-x86_64-gst-libav
+
+      - name: Build pinned UxPlay
+        shell: msys2 {0}
+        run: |
+          set -euxo pipefail
+          git clone https://github.com/FDH2/UxPlay.git UxPlay
+          cd UxPlay
+          git checkout 1fd86efe896ea4225b9766751e2a36975ac76774
+          test "$(git rev-parse HEAD)" = "1fd86efe896ea4225b9766751e2a36975ac76774"
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DNO_MARCH_NATIVE=ON -DCMAKE_INSTALL_PREFIX="$PWD/../install"
+          cmake --build build
+          cmake --install build
+
+      - name: Package isolated runtime and corresponding source
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = $PWD.Path
+          $ucrt = 'C:\msys64\ucrt64'
+          $bin = Join-Path $ucrt 'bin'
+          $plugins = Join-Path $ucrt 'lib\gstreamer-1.0'
+          $scanner = Join-Path $ucrt 'libexec\gstreamer-1.0\gst-plugin-scanner.exe'
+          $objdump = Join-Path $bin 'objdump.exe'
+          $stage = Join-Path $root 'component'
+          New-Item -ItemType Directory -Force -Path $stage,(Join-Path $stage 'lib\gstreamer-1.0'),(Join-Path $stage 'libexec\gstreamer-1.0') | Out-Null
+          Copy-Item (Join-Path $root 'install\bin\uxplay.exe') (Join-Path $stage 'uxplay.exe')
+          Copy-Item $scanner (Join-Path $stage 'libexec\gstreamer-1.0\gst-plugin-scanner.exe')
+          $pluginNames = @('libgstapp.dll','libgstcoreelements.dll','libgstvideoparsersbad.dll','libgstplayback.dll','libgstvideoconvertscale.dll','libgstd3d11.dll','libgstaudioconvert.dll','libgstaudioresample.dll','libgstvolume.dll','libgstlevel.dll','libgstautodetect.dll','libgstwasapi2.dll','libgstlibav.dll','libgstvideofilter.dll','libgsttypefindfunctions.dll')
+          foreach ($name in $pluginNames) { Copy-Item (Join-Path $plugins $name) (Join-Path $stage "lib\gstreamer-1.0\$name") }
+          Copy-Item (Join-Path $root 'UxPlay\LICENSE') (Join-Path $stage 'LICENSE-UxPlay-GPLv3.txt')
+          @'
+          CapturePlay Air Receiver - UxPlay external component
+          Component: 1.74-cp1
+          UxPlay source commit: 1fd86efe896ea4225b9766751e2a36975ac76774
+          Source: https://github.com/FDH2/UxPlay/tree/1fd86efe896ea4225b9766751e2a36975ac76774
+          License: GNU GPL v3 (UxPlay). This component is a separate process and is not linked into CapturePlay.
+          Build: MSYS2 UCRT64, CMake/Ninja Release, -DNO_MARCH_NATIVE=ON, internal UxPlay lib/mdnsd service discovery.
+          CapturePlay starts this receiver only after explicit iPhone/iPad wireless input selection and stops it with the session.
+          '@ | Set-Content -LiteralPath (Join-Path $stage 'SOURCE-AND-LICENSE.txt') -Encoding utf8
+
+          function Add-DependencyClosure([string[]]$initial) {
+            $queue = [System.Collections.Generic.Queue[string]]::new()
+            foreach ($f in $initial) { if (Test-Path $f) { $queue.Enqueue($f) } }
+            $seen = @{}
+            while ($queue.Count -gt 0) {
+              $f = $queue.Dequeue(); $key = $f.ToLowerInvariant(); if ($seen.ContainsKey($key)) { continue }; $seen[$key] = $true
+              $deps = & $objdump -p $f 2>$null | Select-String 'DLL Name:' | ForEach-Object { ($_.Line -replace '.*DLL Name:\s*','').Trim() }
+              foreach ($d in $deps) { $src = Join-Path $bin $d; $dst = Join-Path $stage $d; if ((Test-Path $src) -and !(Test-Path $dst)) { Copy-Item $src $dst; $queue.Enqueue($dst) } }
+            }
+          }
+          $initial = @((Join-Path $stage 'uxplay.exe'),(Join-Path $stage 'libexec\gstreamer-1.0\gst-plugin-scanner.exe')) + (Get-ChildItem (Join-Path $stage 'lib\gstreamer-1.0') -Filter *.dll | ForEach-Object FullName)
+          Add-DependencyClosure $initial
+          Copy-Item (Join-Path $bin 'gst-inspect-1.0.exe') (Join-Path $stage 'gst-inspect-1.0.exe')
+          Add-DependencyClosure @((Join-Path $stage 'gst-inspect-1.0.exe'))
+
+          $env:PATH = "$stage;$env:PATH"
+          $env:GST_PLUGIN_PATH = Join-Path $stage 'lib\gstreamer-1.0'
+          $env:GST_PLUGIN_PATH_1_0 = $env:GST_PLUGIN_PATH
+          $env:GST_PLUGIN_SYSTEM_PATH = ''
+          $env:GST_PLUGIN_SYSTEM_PATH_1_0 = ''
+          $env:GST_PLUGIN_SCANNER = Join-Path $stage 'libexec\gstreamer-1.0\gst-plugin-scanner.exe'
+          $env:GST_PLUGIN_SCANNER_1_0 = $env:GST_PLUGIN_SCANNER
+          $env:GST_REGISTRY = Join-Path $root 'component-test-registry.bin'
+          $elements = @('appsrc','queue','h264parse','decodebin','videoconvert','videoscale','d3d11videosink','audioconvert','audioresample','volume','level','autoaudiosink','wasapi2sink','avdec_aac','avdec_alac')
+          foreach ($e in $elements) { & (Join-Path $stage 'gst-inspect-1.0.exe') $e *> $null; if ($LASTEXITCODE -ne 0) { throw "GStreamer element missing: $e" } }
+          Remove-Item (Join-Path $stage 'gst-inspect-1.0.exe') -Force
+
+          $zip = Join-Path $root 'CapturePlay-AirReceiver-UxPlay-1.74-win64.zip'
+          Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $zip -CompressionLevel Optimal
+          git -C (Join-Path $root 'UxPlay') archive --format=zip --output=(Join-Path $root 'upstream-source-raw.zip') HEAD
+          Expand-Archive (Join-Path $root 'upstream-source-raw.zip') (Join-Path $root 'source-package') -Force
+          Copy-Item (Join-Path $stage 'SOURCE-AND-LICENSE.txt') (Join-Path $root 'source-package\CAPTUREPLAY-BUILD-NOTES.txt')
+          $srcZip = Join-Path $root 'CapturePlay-AirReceiver-UxPlay-1.74-cp1-Source.zip'
+          Compress-Archive -Path (Join-Path $root 'source-package\*') -DestinationPath $srcZip -CompressionLevel Optimal
+          Get-FileHash -Algorithm SHA256 $zip,$srcZip | Format-Table -AutoSize
+
+      - name: Publish component release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete component-air-receiver-1.74-cp1 --repo irodoli/CapturePlay-Releases --yes 2>$null || $true
+          gh release create component-air-receiver-1.74-cp1 --repo irodoli/CapturePlay-Releases --title 'CapturePlay Air Receiver 1.74-cp1' --notes 'Optional non-commercial iPhone/iPad wireless receiver component. Separate GPLv3 UxPlay process; not part of CapturePlay Setup/delta. Corresponding source is attached.' CapturePlay-AirReceiver-UxPlay-1.74-win64.zip CapturePlay-AirReceiver-UxPlay-1.74-cp1-Source.zip
