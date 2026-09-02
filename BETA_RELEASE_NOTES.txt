@@ -1,13 +1,25 @@
-CapturePlay v0.9.0-beta.6
+CapturePlay v0.9.0-beta.7
 
-Beta update focused on the Multiview acceptance feedback.
+スマホ / タブレット入力の最初のBetaです。
 
-- Multiview is now the single visible CapturePlay workspace while it is open. Common quality, display, recording, screenshot, fullscreen, mute and volume controls are available inside Multiview; the normal operator window remains hidden as the capture/control engine.
-- Closing Multiview restores the same Primary native preview to the operator using the saved pre-handoff embed bounds, fixing the small-returned-preview regression.
-- Replay Buffer now uses one Replay-only screen mirror of the physical display containing Multiview and crops the Primary tile. This can include the native child surface that the prior BrowserWindow-only mirror could omit. Replay still does not acquire the capture device again; 10s/30s share one bounded encoded ring and delayed audio remains off.
-- Privacy cameras such as Surface Camera, webcams and StreamCam start stopped. App launch, entering Multiview and adding a camera Auxiliary do not begin camera capture until `カメラ開始` is pressed. Known capture cards such as GC575/GC510 keep automatic start.
-- Native capture helper/C++ is unchanged.
+今回の追加
+- 通常の入力欄へ「スマホ / タブレット」を1項目として追加しました。
+- Android（USB・低遅延）を利用できます。USBデバッグを許可したAndroid端末をUSB接続し、「接続開始」を押した時だけ受信機能が起動します。
+- Android USB映像は既存の低遅延WGC/D3D11経路へ入り、録画・撮影・全画面・画面分離・Primaryのマルチビューを既存機能として利用する構成です。
+- 未使用時はAndroid USB受信機能やADBを起動しません。初回準備も「接続開始」を押した時だけ行います。
+- Android USB用の外部部品はCapturePlay Setupへ同梱せず、初回利用時に公式配布元から取得し、固定SHA-256で検証します。
 
-Automated acceptance: Linux 457/457, unit 159/159; Windows 457/457, unit 159/159; package health and both direct v0.8.11 -> beta.6 and beta.5 -> beta.6 staged delta health PASS; native changes 0.
+まだ準備中
+- iPhone / iPad（ワイヤレス）
+- Android（ワイヤレス）
 
-User acceptance remains required for real Primary handoff/restore, camera privacy start, and LIVE/10s/30s picture timing on the real capture environment.
+ワイヤレス2方式は選択肢をプロトコル名で見せず、受信実装のライセンス・Windows API・実機条件を確認してから有効化します。GPLのAirPlay受信エンジンをCapturePlay本体へそのまま組み込むことはしていません。
+
+確認してほしい点
+1. 普段どおり外部入力等を使った時に重さや挙動が変わっていないこと。
+2. 「スマホ / タブレット」→「Android（USB・低遅延）」で、接続開始前は何も常駐しないこと。
+3. Android端末でUSBデバッグを許可して接続開始すると映像が出ること。
+4. 映像が出た後に撮影・録画・画面分離・全画面・マルチビューPrimaryが使えること。
+5. 接続停止後に受信プロセスが残らないこと。
+
+既存のPrimary native helperは変更していません。正式版は引き続きv0.8.11です。
