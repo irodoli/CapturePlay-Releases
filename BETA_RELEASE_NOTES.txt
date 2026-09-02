@@ -1,22 +1,13 @@
-CapturePlay 0.9.0-beta.5
+CapturePlay v0.9.0-beta.6
 
-マルチビューでPrimary映像そのものを扱えるように改善しました。正式Stableはv0.8.11のままです。
+Beta update focused on the Multiview acceptance feedback.
 
-今回の主な変更
-- マルチビューを開くと、操作画面にあったPrimary映像を同じままPrimaryタイルへ移動します。
-- 操作画面とマルチビューでPrimaryを二重取得しません。同じ低遅延Primaryを使います。
-- マルチビュー内からPrimary入力を「外部入力 / カメラ」「ウィンドウ」「画面」へ変更できます。
-- Primaryを変更した場合も、既存のPrimary切替経路を使い、マルチビュー側で別のPrimaryを新規取得しません。
-- マルチビューを閉じると、同じPrimary映像を操作画面へ戻します。
-- 操作画面には、マルチビュー中は「Primary映像はマルチビューに表示中」と表示します。
-- Replay Bufferのための画面ミラー取得はReplay ON時だけ開始します。通常のLIVE表示には使いません。
-- Replay Buffer OFFでは、ミラー取得、圧縮、10秒/30秒の復号、タイマー、保存中バッファをすべて停止・解放します。
-- Replayの遅延音声は引き続きOFFです。
-- Primaryの録画、撮影、音量ミキサー、診断、低遅延表示のnative helperは従来のままです。
+- Multiview is now the single visible CapturePlay workspace while it is open. Common quality, display, recording, screenshot, fullscreen, mute and volume controls are available inside Multiview; the normal operator window remains hidden as the capture/control engine.
+- Closing Multiview restores the same Primary native preview to the operator using the saved pre-handoff embed bounds, fixing the small-returned-preview regression.
+- Replay Buffer now uses one Replay-only screen mirror of the physical display containing Multiview and crops the Primary tile. This can include the native child surface that the prior BrowserWindow-only mirror could omit. Replay still does not acquire the capture device again; 10s/30s share one bounded encoded ring and delayed audio remains off.
+- Privacy cameras such as Surface Camera, webcams and StreamCam start stopped. App launch, entering Multiview and adding a camera Auxiliary do not begin camera capture until `カメラ開始` is pressed. Known capture cards such as GC575/GC510 keep automatic start.
+- Native capture helper/C++ is unchanged.
 
-確認してほしいこと
-- マルチビューを開くとPrimaryが操作画面からPrimaryタイルへ移ること
-- マルチビュー内でPrimary入力を変更できること
-- マルチビューを閉じるとPrimaryが操作画面へ戻ること
-- Replay Buffer ONで10秒前 / 30秒前が表示されること
-- Replay Buffer OFFで遅延表示とReplay用処理が停止すること
+Automated acceptance: Linux 457/457, unit 159/159; Windows 457/457, unit 159/159; package health and both direct v0.8.11 -> beta.6 and beta.5 -> beta.6 staged delta health PASS; native changes 0.
+
+User acceptance remains required for real Primary handoff/restore, camera privacy start, and LIVE/10s/30s picture timing on the real capture environment.
