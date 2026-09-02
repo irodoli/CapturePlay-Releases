@@ -1,10 +1,10 @@
-CapturePlay v0.9.0-beta.9
+CapturePlay v0.9.0-beta.10
 
-- iPhone / iPad のワイヤレス受信をCapturePlay Setupへ内蔵しました。
-- 初回利用時の別受信機ダウンロード・別インストールは不要です。
-- iPhone / iPad側は標準の「画面ミラーリング」から CapturePlay を選択します。
-- スマホ入力を使わない通常起動では受信機能を起動しません。
-- Android USB（低遅延）は従来どおり利用できます。
-- Androidワイヤレスは次のBetaで受信helperを仕上げるため、beta.9ではまだ有効化していません。
+- Update dialogs now stay in front of the native video surface.
+- Download bytes/rate and applying/verifying phases are shown.
+- The iPhone/iPad receiver runtime remains bundled in Setup as one compressed payload and is extracted locally only after explicit start.
+- No receiver, ADB, or mDNS process is started while mobile input is unused.
+- Android USB remains available.
+- Android wireless continues in beta.11.
 
-Stable v0.8.11は変更していません。
+Stable v0.8.11 is unchanged.
