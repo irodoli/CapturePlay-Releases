@@ -1,10 +1,6 @@
-CapturePlay v0.9.0-beta.10
+CapturePlay v0.9.0-beta.15
 
-- Update dialogs now stay in front of the native video surface.
-- Download bytes/rate and applying/verifying phases are shown.
-- The iPhone/iPad receiver runtime remains bundled in Setup as one compressed payload and is extracted locally only after explicit start.
-- No receiver, ADB, or mDNS process is started while mobile input is unused.
-- Android USB remains available.
-- Android wireless continues in beta.11.
-
-Stable v0.8.11 is unchanged.
+- Updaterの実機E2E確認専用Betaです。
+- CapturePlayの機能挙動はv0.9.0-beta.14から変更していません。
+- iPhone / iPad受信、Android USB、Multi View、非ブロッキングUpdaterはbeta.14をそのまま継承します。
+- Stable v0.8.11は変更していません。
